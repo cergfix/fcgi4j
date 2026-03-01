@@ -23,7 +23,7 @@ connection.setQueryString("querystring=1");
 
 connection.addParams("DOCUMENT_ROOT", "/var/www/");
 connection.addParams("SCRIPT_FILENAME", targetScript);
-connection.addParams("SCRIPT_NAME", targetSCript);
+connection.addParams("SCRIPT_NAME", targetScript);
 connection.addParams("GATEWAY_INTERFACE", "FastCGI/1.0");
 connection.addParams("SERVER_PROTOCOL", "HTTP/1.1");
 connection.addParams("CONTENT_TYPE", "application/x-www-form-urlencoded");
