@@ -25,7 +25,7 @@ jobs:
 
     strategy:
       matrix:
-        java: [ '8', '11', '17' ]
+        java: [ '8', '11', '17', '25' ]
 
     name: Test (Java ${{ matrix.java }})
 
