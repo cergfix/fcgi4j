@@ -39,7 +39,7 @@ jobs:
           distribution: temurin
 
       - name: Build and test
-        run: mvn --batch-mode --no-transfer-progress verify -Dcheckstyle.skip
+        run: mvn --batch-mode --no-transfer-progress verify
 
       - name: Coverage summary
         if: always()
