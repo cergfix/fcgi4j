@@ -42,7 +42,7 @@ jobs:
         run: mvn --batch-mode --no-transfer-progress verify
 
       - name: Coverage summary
-        if: always()
+        if: success()
         uses: cicirello/jacoco-badge-generator@v2
         with:
           jacoco-csv-file: target/site/jacoco/jacoco.csv
