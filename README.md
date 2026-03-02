@@ -58,6 +58,16 @@ connection.close();
 
 ```
 
+## Known bugs
+
+The following bugs exist in `FCGIConnection` and have failing tests:
+
+- **Scatter read doesn't handle STDERR.** `read(ByteBuffer[])` only checks for `FCGI_STDOUT` ([line 440](src/main/java/com/googlecode/fcgi4j/FCGIConnection.java#L440)). If an `FCGI_STDERR` frame arrives during a scatter read, its body is never consumed from the socket, corrupting the stream on the next `readHeader()` call. ([test](src/test/java/com/googlecode/fcgi4j/FCGIConnectionTest.java#L776))
+
+- **STDERR-first breaks response header parsing.** `readyRead()` only reads one header ([lines 520-536](src/main/java/com/googlecode/fcgi4j/FCGIConnection.java#L520)). If the first frame is `FCGI_STDERR`, the subsequent `FCGI_STDOUT` frame containing HTTP response headers is never parsed — `getResponseHeaders()` returns an empty map and the stderr data leaks into the response body. ([test](src/test/java/com/googlecode/fcgi4j/FCGIConnectionTest.java#L832))
+
+- **Scatter read drops non-STDOUT frames.** `read(ByteBuffer[])` hits `break outer` ([line 452](src/main/java/com/googlecode/fcgi4j/FCGIConnection.java#L452)) for any non-`FCGI_STDOUT` frame type without consuming the frame body. For `FCGI_END_REQUEST`, the 8-byte body is left on the socket and `isRequestEnded()` stays false. ([test](src/test/java/com/googlecode/fcgi4j/FCGIConnectionTest.java#L882))
+
 ## Specification
 This library implements the [FastCGI Specification](http://www.fastcgi.com/devkit/doc/fcgi-spec.html).
 

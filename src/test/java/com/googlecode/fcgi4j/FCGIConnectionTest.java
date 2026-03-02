@@ -7,7 +7,7 @@ import com.googlecode.fcgi4j.exceptions.FCGIInvalidHeaderException;
 import com.googlecode.fcgi4j.exceptions.FCGIUnKnownHeaderException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -770,9 +770,9 @@ class FCGIConnectionTest {
 
     // ---- Bug A/B/C: Known bugs documented as @Disabled tests ----
 
+    // Known bug A: Scatter read read(ByteBuffer[]) doesn't handle FCGI_STDERR —
+    // STDERR body is never consumed from socket, corrupting the stream on next readHeader()
     @Test
-    @Disabled("Known bug A: Scatter read read(ByteBuffer[]) doesn't handle FCGI_STDERR — " +
-            "STDERR body is never consumed from socket, corrupting the stream on next readHeader()")
     void scatterReadWithStderrFrameConsumedCorrectly() throws IOException {
         beginRequest();
 
@@ -825,10 +825,10 @@ class FCGIConnectionTest {
         client.close();
     }
 
+    // Known bug B: readyRead() doesn't handle STDERR-first sequence —
+    // when first frame is STDERR, subsequent STDOUT with HTTP headers is never parsed,
+    // responseHeaders stays empty
     @Test
-    @Disabled("Known bug B: readyRead() doesn't handle STDERR-first sequence — " +
-            "when first frame is STDERR, subsequent STDOUT with HTTP headers is never parsed, " +
-            "responseHeaders stays empty")
     void stderrFirstThenStdoutParsesResponseHeaders() throws IOException {
         beginRequest();
 
@@ -875,10 +875,10 @@ class FCGIConnectionTest {
         client.close();
     }
 
+    // Known bug C: Scatter read silently drops non-STDOUT frames —
+    // break outer fires for any non-STDOUT type without consuming the frame body,
+    // leaving data on the socket
     @Test
-    @Disabled("Known bug C: Scatter read silently drops non-STDOUT frames — " +
-            "break outer fires for any non-STDOUT type without consuming the frame body, " +
-            "leaving data on the socket")
     void scatterReadWithEndRequestConsumedCorrectly() throws IOException {
         beginRequest();
 
